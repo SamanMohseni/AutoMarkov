@@ -1,14 +1,52 @@
 # AutoMarkov
-A C++ program that, given the description of a Markov model as a state machine, can numerically solve the model and also generate the differential equations in MATLAB.
+AutoMarkov is a C++ program designed to analyze and solve Markov models represented as state machines. This tool is capable of performing numerical solutions of probabilistic models and can generate the corresponding differential equations to be used with MATLAB for further analysis.
 
-# General Structure of the Code
+## Overview
+Markov models are powerful tools for modeling the behavior and performance of systems subject to random state transitions, such as reliability and availability models in engineering. AutoMarkov automates the process of solving these models by numerically simulating the state transitions over time and providing differential equations that represent the model's dynamics.
 
-The general structure of this code consists of a class named `AutoMarkov` which takes the initial state and a pointer to a function in its constructor. This function (`generateNextState`) takes the current state in the Markov model as input and generates the subsequent states along with their probabilities of occurrence. Using this function, the traversal from the start state begins, and the graph related to the Markov model is constructed.
+## General Structure of the Code
 
-The states in the Markov model are `struct`s that must contain a variable named `TAG`. When states are generated in the `generateNextState` function, this `TAG` should also be initialized; for instance, assign a value of 0 to states we consider as fail, and a value of 1 to other states.
+### `AutoMarkov` Class
 
-Additionally, there is a function in this class named `getMatlabEquations` which takes the `TAG` value and the directory for saving the MATLAB file as inputs. This `TAG` is used, for example, when we want to calculate reliability, as the probability equations related to the healthy states need to be summed. If we have previously assigned a `TAG` value of 1 to healthy states, the function `getMatlabEquations` will sum the healthy states with the `TAG` value of 1 so that MATLAB can also compute the result of this sum of equations.
+The core of the program is encapsulated in the `AutoMarkov` class. The class requires an initial state and a function that defines state transitions (`generateNextState`) upon instantiation.
 
-Moreover, another function in this class, `getGraph`, provides a textual description of the Markov model graph that can be rendered in tools such as https://csacademy.com/app/graph_editor/.
+### State Representation
 
-This class also facilitates the numerical calculation of state probabilities using the `updateProbabilities` function. This is done by calculating the next values based on the current probabilities with small time steps and, after advancing to the desired time, the sum of numerical states with a given `TAG` can be computed with the `getProbabilitySumWithTAG` function. In this way, reliability can be calculated for specific times with high speed and accuracy.
+States are defined as `struct`s containing at least one variable named `TAG`. This `TAG` categorizes states, typically distinguishing between failed states (`TAG = 0`) and operational states (`TAG = 1`). This categorization is used in subsequent calculations and the generation of MATLAB equations.
+
+### Key Methods
+
+- `getMatlabEquations(int TAG, const string& directory)`: Uses the specified `TAG` to filter states and generates MATLAB-friendly equations. For example, to calculate reliability, sum the probabilities of operational states (typically with `TAG = 1`) and generate corresponding MATLAB code.
+- `getGraph(const string& directory)`: Outputs a textual description of the Markov model graph, which can be visualized using online graph editor tools.
+- `updateProbabilities(double dt)`: Updates the probabilities of each state based on the defined transitions and a small timestep `dt`. This method is called iteratively to simulate the model over a specified duration.
+- `getProbabilitySumWithTAG(int TAG)`: After simulating the model, this function calculates the sum of the probabilities of states with the specified `TAG`.
+
+## Usage
+
+1. **Define the State Structure**: Customize the `SystemState` struct to represent the states in your Markov model, including any necessary variables and a `TAG`.
+2. **Implement State Transitions**: Write the `generateNextState` function to describe the possible transitions from any given state and their respective probabilities.
+3. **Initialize the Model**: Create an `AutoMarkov` object with an initial state and the `generateNextState` function.
+4. **Run the Simulation**: Use the `updateProbabilities` method to simulate the model over time.
+5. **Output Results**: Utilize the `getProbabilitySumWithTAG` method to obtain reliability metrics, and the `getMatlabEquations` to generate MATLAB code for further analysis.
+
+### Example
+
+```cpp
+// Define your initial state and transitions
+SystemState initialState = {/* ... initialization ... */};
+AutoMarkov<SystemState> autoMarkov(initialState, generateNextState);
+
+// Run the model
+autoMarkov.updateProbabilities(0.001); // Update probabilities with a timestep of 0.001
+
+// Analyze the results
+double reliability = autoMarkov.getProbabilitySumWithTAG(1);
+cout << "Reliability after simulation: " << reliability << endl;
+
+// Generate MATLAB equations
+autoMarkov.getMatlabEquations(1, "MarkovModelEquations.m");
+```
+
+## Visualization
+
+To visualize the state transition graph, run the `getGraph` method and import the resulting text file into a graph editor tool like the one available at https://csacademy.com/app/graph_editor/.
