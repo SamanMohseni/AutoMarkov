@@ -9,6 +9,6 @@ The states in the Markov model are `struct`s that must contain a variable named 
 
 Additionally, there is a function in this class named `getMatlabEquations` which takes the `TAG` value and the directory for saving the MATLAB file as inputs. This `TAG` is used, for example, when we want to calculate reliability, as the probability equations related to the healthy states need to be summed. If we have previously assigned a `TAG` value of 1 to healthy states, the function `getMatlabEquations` will sum the healthy states with the `TAG` value of 1 so that MATLAB can also compute the result of this sum of equations.
 
-Moreover, another function in this class, `getGraph`, provides a textual description of the Markov model graph that can be rendered in tools such as `/editor_graph/app/com.csacademy`.
+Moreover, another function in this class, `getGraph`, provides a textual description of the Markov model graph that can be rendered in tools such as https://csacademy.com/app/graph_editor/.
 
 This class also facilitates the numerical calculation of state probabilities using the `updateProbabilities` function. This is done by calculating the next values based on the current probabilities with small time steps and, after advancing to the desired time, the sum of numerical states with a given `TAG` can be computed with the `getProbabilitySumWithTAG` function. In this way, reliability can be calculated for specific times with high speed and accuracy.
