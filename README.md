@@ -37,11 +37,11 @@ SystemState initialState = {/* ... initialization ... */};
 AutoMarkov<SystemState> autoMarkov(initialState, generateNextState);
 
 // Run the model
+// Perform time-series updates for multiple iterations:
 autoMarkov.updateProbabilities(0.001); // Update probabilities with a timestep of 0.001
 
 // Analyze the results
 double reliability = autoMarkov.getProbabilitySumWithTAG(1);
-cout << "Reliability after simulation: " << reliability << endl;
 
 // Generate MATLAB equations
 autoMarkov.getMatlabEquations(1, "MarkovModelEquations.m");
