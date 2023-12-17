@@ -50,3 +50,6 @@ autoMarkov.getMatlabEquations(1, "MarkovModelEquations.m");
 ## Visualization
 
 To visualize the state transition graph, run the `getGraph` method and import the resulting text file into a graph editor tool like the one available at https://csacademy.com/app/graph_editor/.
+
+## Acknowledgments
+Related course instructor: [Dr. Alireza Ejlali](https://scholar.google.com/citations?user=H7G8s68AAAAJ&hl=en)
